@@ -1,0 +1,1194 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>楊梅高中分機一覽表</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        :root {
+            --primary: #2E86AB;
+            --gradient-main: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            --shadow: 0 4px 20px rgba(0,0,0,0.15);
+            --radius: 18px;
+            --card-bg: rgba(255,255,255,0.92);
+        }
+
+        body {
+            font-family: 'Noto Sans TC', '微軟正黑體', 'Microsoft JhengHei', sans-serif;
+            background: var(--gradient-main);
+            min-height: 100vh;
+            color: #1A1A2E;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        .particles {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            animation: float linear infinite;
+            opacity: 0.15;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.2; }
+            90% { opacity: 0.15; }
+            100% { transform: translateY(-100px) rotate(720deg); opacity: 0; }
+        }
+
+        .app-container {
+            position: relative;
+            z-index: 1;
+            max-width: 480px;
+            margin: 0 auto;
+            min-height: 100vh;
+            padding-bottom: 100px;
+        }
+
+        /* ===== 頂部標題 ===== */
+        .header {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            padding: 28px 20px 36px;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 30px rgba(0,0,0,0.4);
+        }
+
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0; right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #f093fb, #f5576c, #4facfe, #00f2fe, #43e97b, #f093fb);
+            background-size: 200% 100%;
+            animation: shimmer 3s linear infinite;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: 0% 0; }
+            100% { background-position: 200% 0; }
+        }
+
+        .school-logo {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 14px;
+            font-size: 36px;
+            box-shadow: 0 4px 25px rgba(240, 147, 251, 0.6);
+            animation: pulse-logo 2.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse-logo {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            50% { transform: scale(1.07) rotate(3deg); }
+        }
+
+        .header h1 {
+            color: #fff;
+            font-size: 24px;
+            font-weight: 900;
+            letter-spacing: 4px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            line-height: 1.5;
+        }
+
+        .header .subtitle {
+            color: rgba(255,255,255,0.65);
+            font-size: 13px;
+            margin-top: 6px;
+            letter-spacing: 1px;
+        }
+
+        .total-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(255,255,255,0.12);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 20px;
+            padding: 6px 16px;
+            margin-top: 12px;
+            color: rgba(255,255,255,0.9);
+            font-size: 13px;
+        }
+
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
+            background: #4ade80;
+            border-radius: 50%;
+            animation: pulse-dot 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse-dot {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.6); opacity: 0.6; }
+        }
+
+        /* ===== 搜尋 ===== */
+        .search-section {
+            padding: 14px 16px 6px;
+            background: rgba(255,255,255,0.08);
+            backdrop-filter: blur(15px);
+            position: sticky;
+            top: 198px;
+            z-index: 90;
+        }
+
+        .search-box {
+            display: flex;
+            align-items: center;
+            background: white;
+            border-radius: 30px;
+            padding: 13px 18px;
+            gap: 10px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            border: 2.5px solid transparent;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .search-box:focus-within {
+            border-color: #f093fb;
+            box-shadow: 0 4px 25px rgba(240, 147, 251, 0.4);
+        }
+
+        .search-icon { font-size: 22px; flex-shrink: 0; }
+
+        .search-box input {
+            border: none;
+            outline: none;
+            font-size: 18px;
+            flex: 1;
+            color: #1A1A2E;
+            font-family: inherit;
+            background: transparent;
+        }
+
+        .search-box input::placeholder { color: #bbb; }
+
+        .clear-btn {
+            background: #eee;
+            border: none;
+            border-radius: 50%;
+            width: 28px; height: 28px;
+            cursor: pointer;
+            font-size: 14px;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .clear-btn.visible { display: flex; }
+
+        /* ===== 分類 ===== */
+        .category-tabs {
+            padding: 10px 16px;
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+
+        .category-tabs::-webkit-scrollbar { display: none; }
+
+        .cat-tab {
+            flex-shrink: 0;
+            padding: 9px 16px;
+            border-radius: 22px;
+            border: 2px solid rgba(255,255,255,0.4);
+            background: rgba(255,255,255,0.15);
+            color: white;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.25s;
+            backdrop-filter: blur(5px);
+        }
+
+        .cat-tab.active {
+            background: white;
+            color: #1A1A2E;
+            border-color: white;
+            box-shadow: 0 4px 15px rgba(255,255,255,0.35);
+        }
+
+        /* ===== 統計 ===== */
+        .stats-row {
+            display: flex;
+            gap: 8px;
+            padding: 12px 12px 0;
+        }
+
+        .stat-card {
+            flex: 1;
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.25);
+            border-radius: 14px;
+            padding: 12px 8px;
+            text-align: center;
+            color: white;
+        }
+
+        .stat-num { font-size: 26px; font-weight: 900; display: block; }
+        .stat-label { font-size: 12px; opacity: 0.75; margin-top: 2px; }
+
+        /* ===== 總機 ===== */
+        .info-banner {
+            margin: 14px 12px 0;
+            background: rgba(255,255,255,0.12);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,0.25);
+            border-radius: var(--radius);
+            padding: 16px;
+            color: white;
+        }
+
+        .info-banner h2 {
+            font-size: 16px;
+            font-weight: 800;
+            margin-bottom: 12px;
+        }
+
+        .phone-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .phone-chip {
+            background: rgba(255,255,255,0.18);
+            border: 1px solid rgba(255,255,255,0.35);
+            border-radius: 22px;
+            padding: 8px 16px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .phone-chip:active {
+            background: rgba(255,255,255,0.35);
+            transform: scale(0.95);
+        }
+
+        /* ===== 結果 ===== */
+        .result-count {
+            padding: 6px 16px;
+            color: rgba(255,255,255,0.75);
+            font-size: 13px;
+            text-align: right;
+        }
+
+        /* ===== 主內容 ===== */
+        .main-content { padding: 8px 12px; }
+
+        /* ===== 部門卡片 ===== */
+        .dept-card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            margin-bottom: 14px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: transform 0.2s;
+            animation: slideIn 0.4s ease backwards;
+            border-left: 5px solid var(--dept-color, #667eea);
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .dept-card:active { transform: scale(0.99); }
+
+        .dept-header {
+            padding: 16px 16px 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .dept-header-left {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+        }
+
+        .dept-icon {
+            width: 48px; height: 48px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            background: color-mix(in srgb, var(--dept-color, #667eea) 15%, white);
+            flex-shrink: 0;
+        }
+
+        .dept-info h3 {
+            font-size: 18px;
+            font-weight: 800;
+            color: #1A1A2E;
+        }
+
+        .dept-info .dept-meta {
+            font-size: 13px;
+            color: #777;
+            margin-top: 3px;
+        }
+
+        .dept-arrow {
+            font-size: 22px;
+            color: #bbb;
+            transition: transform 0.3s;
+        }
+
+        .dept-card.expanded .dept-arrow {
+            transform: rotate(180deg);
+        }
+
+        /* ===== 分機列表 ===== */
+        .ext-list {
+            display: none;
+            padding: 0 14px 14px;
+            border-top: 1px solid rgba(0,0,0,0.07);
+        }
+
+        .dept-card.expanded .ext-list { display: block; }
+
+        .ext-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 12px;
+            border-radius: 13px;
+            margin-top: 8px;
+            background: rgba(255,255,255,0.6);
+            border: 1.5px solid rgba(0,0,0,0.06);
+            gap: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .ext-item:hover, .ext-item:active {
+            background: rgba(102, 126, 234, 0.1);
+            border-color: rgba(102, 126, 234, 0.3);
+            transform: translateX(4px);
+        }
+
+        .ext-item.highlighted {
+            background: rgba(255, 209, 102, 0.2);
+            border-color: rgba(255, 209, 102, 0.5);
+        }
+
+        .ext-role {
+            flex: 1;
+            font-size: 16px;
+            font-weight: 600;
+            color: #1A1A2E;
+            line-height: 1.3;
+        }
+
+        .ext-name {
+            font-size: 14px;
+            color: #777;
+            min-width: 55px;
+            text-align: right;
+            flex-shrink: 0;
+        }
+
+        .ext-number {
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+            color: white;
+            border-radius: 11px;
+            padding: 6px 13px;
+            font-size: 16px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            min-width: 64px;
+            text-align: center;
+            transition: transform 0.15s;
+            flex-shrink: 0;
+        }
+
+        .ext-number:active { transform: scale(0.9); }
+        .ext-number.direct { background: linear-gradient(135deg, #43e97b, #38f9d7); color: #1a1a2e; font-size: 13px; }
+        .ext-number.fax { background: linear-gradient(135deg, #aaa, #888); }
+
+        /* ===== 無結果 ===== */
+        .no-result {
+            text-align: center;
+            padding: 60px 20px;
+            color: rgba(255,255,255,0.85);
+            display: none;
+        }
+
+        .no-result .emoji { font-size: 64px; display: block; margin-bottom: 18px; }
+        .no-result p { font-size: 20px; font-weight: 600; }
+
+        /* ===== FAB ===== */
+        .fab-container {
+            position: fixed;
+            bottom: 24px;
+            right: 18px;
+            z-index: 200;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 10px;
+        }
+
+        .fab {
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s;
+        }
+
+        .fab:active { transform: scale(0.88); }
+
+        .fab-main {
+            width: 62px; height: 62px;
+            font-size: 28px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+        }
+
+        .fab-top {
+            width: 50px; height: 50px;
+            font-size: 22px;
+            background: linear-gradient(135deg, #43e97b, #38f9d7);
+            color: #1a1a2e;
+            display: none;
+        }
+
+        /* ===== Toast ===== */
+        .toast {
+            position: fixed;
+            bottom: 110px;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: rgba(26,26,46,0.95);
+            color: white;
+            padding: 14px 26px;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: 600;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+            opacity: 0;
+            transition: opacity 0.3s, transform 0.3s;
+            z-index: 300;
+            pointer-events: none;
+            max-width: 88%;
+            text-align: center;
+        }
+
+        .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+        /* ===== 載入畫面 ===== */
+        .loading-overlay {
+            position: fixed;
+            inset: 0;
+            background: var(--gradient-main);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            transition: opacity 0.5s;
+        }
+
+        .loading-overlay.fade-out { opacity: 0; pointer-events: none; }
+
+        .loading-logo { font-size: 72px; animation: bounce 1s ease-in-out infinite; }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-18px) scale(1.05); }
+        }
+
+        .loading-text {
+            color: white;
+            font-size: 22px;
+            font-weight: 800;
+            margin-top: 22px;
+            letter-spacing: 3px;
+        }
+
+        .loading-sub {
+            color: rgba(255,255,255,0.7);
+            font-size: 14px;
+            margin-top: 8px;
+            letter-spacing: 1px;
+        }
+
+        .loading-bar {
+            width: 220px;
+            height: 5px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 3px;
+            margin-top: 24px;
+            overflow: hidden;
+        }
+
+        .loading-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #f093fb, #f5576c, #ffd166);
+            border-radius: 3px;
+            animation: load 1.8s ease-in-out forwards;
+        }
+
+        @keyframes load { 0% { width: 0; } 100% { width: 100%; } }
+
+        /* ===== 進度條 ===== */
+        .scroll-indicator {
+            position: fixed;
+            top: 0; left: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #f093fb, #f5576c, #ffd166);
+            z-index: 999;
+            transition: width 0.1s;
+        }
+
+        /* ===== 搜尋高亮 ===== */
+        mark.hl {
+            background: linear-gradient(135deg, #ffd166, #f9a11b);
+            color: #1a1a2e;
+            border-radius: 3px;
+            padding: 0 2px;
+            font-weight: 700;
+        }
+
+        /* 部門顏色 */
+        .c-indigo { --dept-color: #818cf8; }
+        .c-blue { --dept-color: #60a5fa; }
+        .c-yellow { --dept-color: #fbbf24; }
+        .c-green { --dept-color: #34d399; }
+        .c-red { --dept-color: #f87171; }
+        .c-orange { --dept-color: #fb923c; }
+        .c-purple { --dept-color: #a78bfa; }
+        .c-teal { --dept-color: #2dd4bf; }
+        .c-pink { --dept-color: #f472b6; }
+        .c-cyan { --dept-color: #22d3ee; }
+        .c-emerald { --dept-color: #10b981; }
+        .c-rose { --dept-color: #fb7185; }
+        .c-violet { --dept-color: #8b5cf6; }
+        .c-amber { --dept-color: #f59e0b; }
+        .c-sky { --dept-color: #0ea5e9; }
+    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;600;700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<!-- 載入畫面 -->
+<div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-logo">🏫</div>
+    <div class="loading-text">楊梅高中</div>
+    <div class="loading-sub">桃園市立楊梅高級中學</div>
+    <div class="loading-bar"><div class="loading-bar-fill"></div></div>
+</div>
+
+<!-- 滾動進度 -->
+<div class="scroll-indicator" id="scrollIndicator"></div>
+
+<!-- 粒子 -->
+<div class="particles" id="particles"></div>
+
+<div class="app-container">
+
+    <!-- 標題 -->
+    <div class="header" id="mainHeader">
+        <div class="school-logo">🏫</div>
+        <h1>楊梅高中<br>分機一覽表</h1>
+        <div class="subtitle">桃園市立楊梅高級中學　版本 115/09/07</div>
+        <div class="total-badge">
+            <div class="pulse-dot"></div>
+            即時查詢系統 · 點擊分機可複製號碼
+        </div>
+    </div>
+
+    <!-- 總機 -->
+    <div class="info-banner">
+        <h2>📞 總機號碼（點擊撥打）</h2>
+        <div class="phone-chips">
+            <div class="phone-chip" onclick="dialPhone('03-4789618', '代表號')">📱 03-4789618 <small style="opacity:.7">代表號</small></div>
+            <div class="phone-chip" onclick="dialPhone('03-4780449', '二線')">📱 4780449 <small style="opacity:.7">二線</small></div>
+            <div class="phone-chip" onclick="dialPhone('03-4780740', '三線')">📱 4780740 <small style="opacity:.7">三線</small></div>
+        </div>
+    </div>
+
+    <!-- 統計 -->
+    <div class="stats-row">
+        <div class="stat-card">
+            <span class="stat-num" id="statDept">0</span>
+            <div class="stat-label">部門單位</div>
+        </div>
+        <div class="stat-card">
+            <span class="stat-num" id="statExt">0</span>
+            <div class="stat-label">分機筆數</div>
+        </div>
+        <div class="stat-card">
+            <span class="stat-num" id="statRoom">0</span>
+            <div class="stat-label">教室場館</div>
+        </div>
+    </div>
+
+    <!-- 搜尋 -->
+    <div class="search-section">
+        <div class="search-box">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="searchInput" placeholder="搜尋職稱、姓名、分機號碼..." autocomplete="off">
+            <button class="clear-btn" id="clearBtn" onclick="clearSearch()">✕</button>
+        </div>
+    </div>
+
+    <!-- 分類 -->
+    <div class="category-tabs" id="catTabs">
+        <div class="cat-tab active" onclick="setCategory('all',this)">全部</div>
+        <div class="cat-tab" onclick="setCategory('校長室',this)">🎓 校長室</div>
+        <div class="cat-tab" onclick="setCategory('人事室',this)">👤 人事</div>
+        <div class="cat-tab" onclick="setCategory('會計室',this)">💰 會計</div>
+        <div class="cat-tab" onclick="setCategory('教務處',this)">📚 教務</div>
+        <div class="cat-tab" onclick="setCategory('學務處',this)">🎯 學務</div>
+        <div class="cat-tab" onclick="setCategory('總務處',this)">🔧 總務</div>
+        <div class="cat-tab" onclick="setCategory('輔導室',this)">💬 輔導</div>
+        <div class="cat-tab" onclick="setCategory('圖書館',this)">📖 圖書</div>
+        <div class="cat-tab" onclick="setCategory('實習處',this)">🏭 實習</div>
+        <div class="cat-tab" onclick="setCategory('實驗室',this)">🧪 實驗</div>
+        <div class="cat-tab" onclick="setCategory('教室',this)">🏛️ 教室</div>
+        <div class="cat-tab" onclick="setCategory('御風樓',this)">🏢 御風</div>
+    </div>
+
+    <!-- 結果計數 -->
+    <div class="result-count" id="resultCount"></div>
+
+    <!-- 內容 -->
+    <div class="main-content" id="mainContent"></div>
+
+    <!-- 無結果 -->
+    <div class="no-result" id="noResult">
+        <span class="emoji">🔎</span>
+        <p>找不到相關結果</p>
+        <p style="font-size:15px;margin-top:10px;opacity:0.7">請嘗試其他關鍵字</p>
+    </div>
+
+</div>
+
+<!-- FAB -->
+<div class="fab-container">
+    <button class="fab fab-top" id="fabTop" onclick="scrollTop()">⬆</button>
+    <button class="fab fab-main" onclick="focusSearch()" title="搜尋">🔍</button>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ===== 完整分機資料 =====
+const DEPTS = [
+    {
+        id:'principal', name:'校長室', icon:'🎓', color:'c-indigo',
+        direct:'4856117 (傳真)',
+        entries:[
+            {role:'校長', name:'鍾校長', ext:'1101'},
+            {role:'秘書', name:'黃秘書', ext:'1102'},
+            {role:'技工', name:'劉小姐', ext:'1103'},
+            {role:'校長宿舍', name:'', ext:'1104'},
+            {role:'警衛室', name:'', ext:'1110'},
+            {role:'聯合辦公室', name:'', ext:'1112'},
+            {role:'第一會議室', name:'', ext:'1113'},
+            {role:'交通安全教室', name:'', ext:'1114'},
+            {role:'第二會議室', name:'', ext:'1115'},
+        ]
+    },
+    {
+        id:'personnel', name:'人事室', icon:'👤', color:'c-blue',
+        direct:'4784103',
+        entries:[
+            {role:'人事室直線', name:'', ext:'4784103', t:'direct'},
+            {role:'傳真', name:'', ext:'4755774', t:'fax'},
+            {role:'主任', name:'邱主任', ext:'1121'},
+            {role:'組員', name:'陳先生', ext:'1122'},
+        ]
+    },
+    {
+        id:'accounting', name:'會計室', icon:'💰', color:'c-amber',
+        direct:'4789683',
+        entries:[
+            {role:'會計室直線', name:'', ext:'4789683', t:'direct'},
+            {role:'傳真', name:'', ext:'4782322', t:'fax'},
+            {role:'主任', name:'林主任', ext:'1131'},
+            {role:'組員', name:'張小姐', ext:'1132'},
+            {role:'佐理員', name:'陳小姐', ext:'1133'},
+        ]
+    },
+    {
+        id:'academic', name:'教務處', icon:'📚', color:'c-green',
+        direct:'4783574',
+        entries:[
+            {role:'教務處直線', name:'', ext:'4783574', t:'direct'},
+            {role:'傳真', name:'', ext:'4882675', t:'fax'},
+            {role:'主任', name:'李主任', ext:'1201'},
+            {role:'教學組長', name:'邱組長', ext:'1211'},
+            {role:'幹事', name:'張小姐', ext:'1212'},
+            {role:'印刷室', name:'陳先生', ext:'1213'},
+            {role:'註冊組長', name:'賴組長', ext:'1221'},
+            {role:'幹事', name:'曾小姐', ext:'1222'},
+            {role:'設備組長', name:'鄭組長', ext:'1231'},
+            {role:'助理員', name:'謝小姐', ext:'1232'},
+            {role:'書記', name:'吳先生', ext:'1233'},
+            {role:'數位前導助理', name:'王小姐', ext:'1234'},
+            {role:'實驗研究組長', name:'邱組長', ext:'1241'},
+            {role:'幹事', name:'宋先生', ext:'1242'},
+            {role:'均質化專案助理', name:'', ext:'1243'},
+            {role:'學期歷程檔案助理', name:'楊小姐', ext:'1244'},
+            {role:'試務組組長', name:'蘇組長', ext:'1251'},
+            {role:'幹事', name:'蔡小姐', ext:'1252'},
+            {role:'英語教師', name:'', ext:'1262'},
+            {role:'雙語助理', name:'葉先生', ext:'1263'},
+            {role:'雙語教師', name:'高老師', ext:'1264'},
+        ]
+    },
+    {
+        id:'student', name:'學務處', icon:'🎯', color:'c-red',
+        direct:'4758950',
+        entries:[
+            {role:'學務處直線', name:'', ext:'4758950', t:'direct'},
+            {role:'傳真', name:'', ext:'4757034', t:'fax'},
+            {role:'主任', name:'呂主任', ext:'1301'},
+            {role:'午餐秘書', name:'李老師', ext:'1302'},
+            {role:'學務創新人力', name:'呂先生', ext:'1303'},
+            {role:'訓育組長', name:'簡組長', ext:'1311'},
+            {role:'幹事', name:'傅小姐', ext:'1312'},
+            {role:'活動組長', name:'魏組長', ext:'1321'},
+            {role:'學務創新人力', name:'林先生', ext:'1322'},
+            {role:'體育組長', name:'廖組長', ext:'1331'},
+            {role:'游泳池', name:'陳先生', ext:'1333'},
+            {role:'游泳池管理員', name:'鍾小姐', ext:'1334'},
+            {role:'跆拳道館', name:'', ext:'1335'},
+            {role:'衛生組長', name:'詹組長', ext:'1341'},
+            {role:'護理師(健康中心)', name:'陳小姐', ext:'1342'},
+            {role:'學務創新人力', name:'張先生', ext:'1343'},
+            {role:'健康中心', name:'陳小姐', ext:'1119'},
+            {role:'禮堂準備室', name:'', ext:'1324'},
+            {role:'校安中心直線', name:'', ext:'4854998', t:'direct'},
+            {role:'校安中心傳真', name:'', ext:'4780428', t:'fax'},
+            {role:'學務創新人力', name:'廖先生', ext:'1351'},
+            {role:'生輔組長', name:'張組長', ext:'1352'},
+            {role:'學務創新人力', name:'李先生', ext:'1353'},
+            {role:'學務創新人力', name:'陳先生', ext:'1354'},
+            {role:'幹事', name:'范小姐', ext:'1355'},
+            {role:'學務創新人力', name:'郭先生', ext:'1356'},
+            {role:'學務創新人力', name:'彭先生', ext:'1357'},
+        ]
+    },
+    {
+        id:'general', name:'總務處', icon:'🔧', color:'c-orange',
+        direct:'4783349',
+        entries:[
+            {role:'總務處直線', name:'', ext:'4783349', t:'direct'},
+            {role:'傳真', name:'', ext:'4780164', t:'fax'},
+            {role:'主任', name:'劉主任', ext:'1401'},
+            {role:'文書組長', name:'黃組長', ext:'1411'},
+            {role:'臨時人員', name:'鍾小姐', ext:'1412'},
+            {role:'出納組長', name:'黃組長', ext:'1421'},
+            {role:'庶務組長', name:'劉組長', ext:'1431'},
+            {role:'財管管理員', name:'謝先生', ext:'1432'},
+            {role:'採購幹事', name:'張先生', ext:'1433'},
+            {role:'學務創新人力', name:'彭先生', ext:'1434'},
+            {role:'臨時人員', name:'宋先生', ext:'1435'},
+            {role:'員生社直線', name:'', ext:'4750453', t:'direct'},
+            {role:'員生社', name:'林小姐', ext:'1491'},
+        ]
+    },
+    {
+        id:'guidance', name:'輔導室', icon:'💬', color:'c-purple',
+        direct:'4758437',
+        entries:[
+            {role:'輔導室直線', name:'', ext:'4758437', t:'direct'},
+            {role:'輔導主任', name:'林主任', ext:'1503'},
+            {role:'專任輔導教師', name:'陳老師', ext:'1504'},
+            {role:'專任輔導教師', name:'吳老師', ext:'1507'},
+            {role:'專任輔導教師', name:'金老師', ext:'1501'},
+            {role:'專任輔導教師', name:'陳老師', ext:'1502'},
+            {role:'特教教師1', name:'何老師', ext:'1505'},
+            {role:'特教教師2', name:'林老師', ext:'1506'},
+            {role:'特教教師3', name:'曾老師', ext:'1511'},
+            {role:'生涯資訊室', name:'', ext:'1508'},
+            {role:'團體諮商室', name:'', ext:'1509'},
+            {role:'學習中心', name:'', ext:'1510'},
+        ]
+    },
+    {
+        id:'library', name:'圖書館', icon:'📖', color:'c-teal',
+        direct:'4780586',
+        entries:[
+            {role:'圖書館直線', name:'', ext:'4780586', t:'direct'},
+            {role:'主任', name:'施主任', ext:'1601'},
+            {role:'讀者服務組長', name:'何組長', ext:'1602'},
+            {role:'資訊媒體組長', name:'賴組長', ext:'1603'},
+            {role:'幹事/讀者服務櫃台', name:'呂小姐', ext:'1605'},
+            {role:'喜閱學堂', name:'', ext:'1606'},
+            {role:'演藝廳', name:'', ext:'1607'},
+        ]
+    },
+    {
+        id:'internship', name:'實習處', icon:'🏭', color:'c-pink',
+        direct:'',
+        entries:[
+            {role:'主任', name:'簡主任', ext:'1701'},
+            {role:'實習就業組長', name:'蔡組長', ext:'1702'},
+            {role:'資訊科主任', name:'廖主任', ext:'1703'},
+            {role:'技佐', name:'林先生', ext:'1704'},
+            {role:'電子科主任', name:'余主任', ext:'1705'},
+            {role:'技士', name:'卓小姐', ext:'1706'},
+        ]
+    },
+    {
+        id:'homeroom', name:'導師辦公室', icon:'🏠', color:'c-emerald',
+        direct:'',
+        entries:[
+            {role:'悅知樓1樓導師室(高一)', name:'', ext:'1361 / 1365'},
+            {role:'悅知樓2樓導師室(高一)', name:'', ext:'1366'},
+            {role:'悅知樓3樓導師室(高二)', name:'', ext:'1362 / 1364'},
+            {role:'日新樓1樓導師室(高三)', name:'', ext:'1363 / 1367'},
+        ]
+    },
+    {
+        id:'teacher_office', name:'專任教師辦公室', icon:'👩‍🏫', color:'c-sky',
+        direct:'',
+        entries:[
+            {role:'蘊慧樓1樓專一辦公室', name:'', ext:'1271 / 1275'},
+            {role:'蘊慧樓2樓專二辦公室', name:'', ext:'1272'},
+            {role:'日新樓2樓專三辦公室', name:'', ext:'1273'},
+            {role:'日新樓3樓專四辦公室', name:'', ext:'1274'},
+        ]
+    },
+    {
+        id:'lab', name:'實驗室', icon:'🧪', color:'c-cyan',
+        direct:'',
+        entries:[
+            {role:'化學實驗室', name:'', ext:'1373'},
+            {role:'基礎理化實驗室', name:'', ext:'1374'},
+            {role:'物理實驗室', name:'', ext:'1375'},
+            {role:'生物實驗室', name:'', ext:'1376'},
+            {role:'基礎生物實驗室', name:'', ext:'1378'},
+            {role:'地科實驗室', name:'', ext:'1379'},
+        ]
+    },
+    {
+        id:'classroom', name:'專科教室', icon:'🏛️', color:'c-violet',
+        direct:'',
+        entries:[
+            {role:'啟明樓校史室', name:'', ext:'1284'},
+            {role:'語言教室', name:'', ext:'1285'},
+            {role:'蘊慧樓電腦機房', name:'', ext:'1286'},
+            {role:'電腦教室一', name:'', ext:'1287'},
+            {role:'視聽一教室', name:'', ext:'1288'},
+            {role:'電腦教室二', name:'', ext:'1289'},
+            {role:'美術教室', name:'', ext:'1291'},
+            {role:'科技應用教室', name:'', ext:'1292'},
+            {role:'新興科技推廣教室', name:'', ext:'1293'},
+            {role:'雙語教室', name:'', ext:'1294'},
+            {role:'電腦教室三', name:'', ext:'1295'},
+            {role:'探究與實作教室', name:'', ext:'1296'},
+            {role:'環境教育中心', name:'', ext:'1297'},
+            {role:'英語情境教室', name:'', ext:'1711'},
+            {role:'日新樓展演中心', name:'', ext:'1712'},
+            {role:'護理教室', name:'', ext:'1751'},
+            {role:'計概教室', name:'', ext:'1752'},
+            {role:'音樂教室', name:'', ext:'1761'},
+            {role:'藝術生活教室', name:'', ext:'1764'},
+            {role:'視覺藝術教室', name:'', ext:'1765'},
+        ]
+    },
+    {
+        id:'yufeng', name:'御風樓', icon:'🏢', color:'c-rose',
+        direct:'',
+        entries:[
+            {role:'御風2-1', name:'', ext:'2421'},
+            {role:'御風2-2', name:'', ext:'2422'},
+            {role:'御風2-3', name:'', ext:'2423'},
+            {role:'御風3-1', name:'', ext:'2431'},
+            {role:'御風3-2', name:'', ext:'2432'},
+            {role:'御風3-3', name:'', ext:'2433'},
+            {role:'御風3-4', name:'', ext:'2434'},
+            {role:'社團教室2', name:'', ext:'2435'},
+        ]
+    },
+    {
+        id:'biobuilding', name:'生科大樓', icon:'🔬', color:'c-emerald',
+        direct:'',
+        entries:[
+            {role:'體育器材室', name:'', ext:'1811'},
+            {role:'烹飪教室', name:'', ext:'1822'},
+            {role:'生活科技教室', name:'', ext:'1821'},
+            {role:'家政教室', name:'', ext:'1822'},
+        ]
+    },
+];
+
+// ===== 音效 =====
+function beep(freq=700, dur=0.08, vol=0.07) {
+    try {
+        const ctx = new (window.AudioContext||window.webkitAudioContext)();
+        const o = ctx.createOscillator();
+        const g = ctx.createGain();
+        o.connect(g); g.connect(ctx.destination);
+        o.frequency.value = freq;
+        o.type = 'sine';
+        g.gain.setValueAtTime(vol, ctx.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + dur);
+        o.start(ctx.currentTime);
+        o.stop(ctx.currentTime + dur);
+    } catch(e){}
+}
+
+function chime() {
+    [523,659,784,1047].forEach((f,i)=>{
+        setTimeout(()=>beep(f,0.15,0.06), i*80);
+    });
+}
+
+// ===== Toast =====
+let _t;
+function showToast(msg) {
+    const el = document.getElementById('toast');
+    el.textContent = msg;
+    el.classList.add('show');
+    clearTimeout(_t);
+    _t = setTimeout(()=>el.classList.remove('show'), 2600);
+}
+
+// ===== 撥號 =====
+function dialPhone(num, label) {
+    chime();
+    window.location.href = `tel:${num}`;
+    showToast(`📞 撥打 ${num}（${label}）`);
+}
+
+function tapExt(ext, role) {
+    beep(900, 0.05);
+    if (navigator.clipboard) {
+        navigator.clipboard.writeText(ext).then(()=>{
+            showToast(`✅ 分機 ${ext} 已複製！`);
+        }).catch(()=>{
+            showToast(`📋 分機：${ext}　${role}`);
+        });
+    } else {
+        showToast(`📋 分機：${ext}　${role}`);
+    }
+}
+
+// ===== 粒子 =====
+function initParticles() {
+    const c = document.getElementById('particles');
+    const cols = ['#f093fb','#4facfe','#43e97b','#ffd166','#f5576c','#a78bfa','#38f9d7'];
+    for (let i=0; i<18; i++) {
+        const d = document.createElement('div');
+        d.className = 'particle';
+        const s = Math.random()*28+8;
+        d.style.cssText = `width:${s}px;height:${s}px;left:${Math.random()*100}%;background:${cols[i%cols.length]};animation-duration:${Math.random()*14+10}s;animation-delay:${Math.random()*12}s;`;
+        c.appendChild(d);
+    }
+}
+
+// ===== 搜尋高亮 =====
+function hl(text, q) {
+    if (!q) return text;
+    return text.replace(new RegExp(`(${q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')})`, 'gi'), '<mark class="hl">$1</mark>');
+}
+
+// ===== 狀態 =====
+let curCat = 'all', curQ = '';
+
+// ===== 渲染 =====
+function render() {
+    const container = document.getElementById('mainContent');
+    const noResult = document.getElementById('noResult');
+    const countEl = document.getElementById('resultCount');
+    container.innerHTML = '';
+
+    let shown = 0, delay = 0;
+
+    DEPTS.forEach(dept => {
+        // 分類篩選
+        const catMatch = curCat === 'all' || dept.name.includes(curCat);
+        if (!catMatch) return;
+
+        // 搜尋篩選
+        let entries = dept.entries;
+        if (curQ) {
+            entries = dept.entries.filter(e =>
+                e.role.includes(curQ) ||
+                (e.name && e.name.includes(curQ)) ||
+                e.ext.includes(curQ)
+            );
+            if (entries.length === 0 && !dept.name.includes(curQ)) return;
+        }
+
+        shown++;
+        const open = curQ && entries.length > 0;
+
+        const card = document.createElement('div');
+        card.className = `dept-card ${dept.color}${open ? ' expanded' : ''}`;
+        card.style.animationDelay = `${delay*0.055}s`;
+        delay++;
+
+        card.innerHTML = `
+            <div class="dept-header" onclick="toggleCard(this)">
+                <div class="dept-header-left">
+                    <div class="dept-icon">${dept.icon}</div>
+                    <div class="dept-info">
+                        <h3>${hl(dept.name, curQ)}</h3>
+                        <div class="dept-meta">${entries.length} 個分機${dept.direct ? ' · ☎ ' + dept.direct : ''}</div>
+                    </div>
+                </div>
+                <span class="dept-arrow">⌄</span>
+            </div>
+            <div class="ext-list">
+                ${entries.map(e => `
+                    <div class="ext-item${curQ && (e.role.includes(curQ)||(e.name&&e.name.includes(curQ))||e.ext.includes(curQ))?' highlighted':''}"
+                         onclick="tapExt('${e.ext}','${e.role}')">
+                        <div class="ext-role">${hl(e.role, curQ)}</div>
+                        ${e.name ? `<div class="ext-name">${hl(e.name, curQ)}</div>` : ''}
+                        <div class="ext-number${e.t?' '+e.t:''}">${hl(e.ext, curQ)}</div>
+                    </div>
+                `).join('')}
+            </div>
+        `;
+
+        container.appendChild(card);
+        if (open) setTimeout(()=>card.scrollIntoView({behavior:'smooth',block:'nearest'}), 300);
+    });
+
+    noResult.style.display = shown === 0 ? 'block' : 'none';
+    countEl.textContent = curQ ? `找到 ${shown} 個相關部門` : '';
+}
+
+// ===== 卡片開合 =====
+function toggleCard(hdr) {
+    beep(600, 0.06);
+    const card = hdr.closest('.dept-card');
+    const was = card.classList.contains('expanded');
+    document.querySelectorAll('.dept-card.expanded').forEach(c=>{ if(c!==card) c.classList.remove('expanded'); });
+    card.classList.toggle('expanded', !was);
+    if (!was) setTimeout(()=>card.scrollIntoView({behavior:'smooth',block:'nearest'}), 150);
+}
+
+// ===== 搜尋 =====
+let searchDelay;
+document.getElementById('searchInput').addEventListener('input', function() {
+    curQ = this.value.trim();
+    document.getElementById('clearBtn').classList.toggle('visible', curQ.length > 0);
+    clearTimeout(searchDelay);
+    searchDelay = setTimeout(render, 220);
+});
+
+function clearSearch() {
+    beep(600, 0.05);
+    document.getElementById('searchInput').value = '';
+    curQ = '';
+    document.getElementById('clearBtn').classList.remove('visible');
+    render();
+}
+
+function focusSearch() {
+    beep(700, 0.05);
+    document.getElementById('searchInput').focus();
+    document.querySelector('.search-section').scrollIntoView({behavior:'smooth'});
+}
+
+// ===== 分類 =====
+function setCategory(cat, btn) {
+    beep(650, 0.06);
+    curCat = cat;
+    document.querySelectorAll('.cat-tab').forEach(t=>t.classList.remove('active'));
+    btn.classList.add('active');
+    render();
+}
+
+// ===== 回頂 =====
+function scrollTop() {
+    beep(800, 0.05);
+    window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ===== 滾動 =====
+window.addEventListener('scroll', ()=>{
+    const pct = window.scrollY / (document.body.scrollHeight - window.innerHeight) * 100;
+    document.getElementById('scrollIndicator').style.width = pct + '%';
+    document.getElementById('fabTop').style.display = window.scrollY > 250 ? 'flex' : 'none';
+});
+
+// ===== 統計動畫 =====
+function animNum(id, target) {
+    const el = document.getElementById(id);
+    let cur = 0, step = Math.max(1, Math.ceil(target/30));
+    const t = setInterval(()=>{
+        cur += step;
+        if (cur >= target) { cur = target; clearInterval(t); }
+        el.textContent = cur;
+    }, 35);
+}
+
+// ===== 初始化 =====
+window.addEventListener('load', ()=>{
+    initParticles();
+    setTimeout(()=>{
+        document.getElementById('loadingOverlay').classList.add('fade-out');
+        setTimeout(()=>{ document.getElementById('loadingOverlay').style.display='none'; }, 500);
+        render();
+
+        let totalExt = 0, totalRooms = 0;
+        DEPTS.forEach(d => {
+            d.entries.forEach(e => { if (!isNaN(parseInt(e.ext[0]))) totalExt++; });
+            if (['classroom','lab','yufeng','biobuilding'].includes(d.id)) totalRooms += d.entries.length;
+        });
+        animNum('statDept', DEPTS.length);
+        animNum('statExt', totalExt);
+        animNum('statRoom', totalRooms);
+    }, 1900);
+});
+
+// 動態計算 sticky top
+function fixSticky() {
+    const hh = document.getElementById('mainHeader').offsetHeight;
+    document.querySelector('.search-section').style.top = hh + 'px';
+}
+window.addEventListener('resize', fixSticky);
+setTimeout(fixSticky, 200);
+</script>
+</body>
+</html>
